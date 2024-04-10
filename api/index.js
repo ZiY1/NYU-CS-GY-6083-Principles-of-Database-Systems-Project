@@ -1,6 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
+import checkingAccountRoutes from "./routes/checking_account.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 // API routes with specific base paths
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/checking_account", checkingAccountRoutes);
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
