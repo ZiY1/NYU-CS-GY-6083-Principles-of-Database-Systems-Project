@@ -1,6 +1,6 @@
 import { db } from '../connect.js';
 
-export const openCheckingAccount = (req, res) => {
+export const openSavingAccount = (req, res) => {
     // Define the query to insert a new account into the zzz_account table.
     const insertAccountQuery = `
         INSERT INTO zzz_account (
@@ -36,22 +36,22 @@ export const openCheckingAccount = (req, res) => {
                 });
             }
 
-            // If the account is successfully created, insert details into zzz_checking.
-            const insertCheckingQuery = `
-                INSERT INTO zzz_checking (
-                    acct_id, acct_type, service_charge
+            // If the account is successfully created, insert details into zzz_saving.
+            const insertSavingQuery = `
+                INSERT INTO zzz_saving (
+                    acct_id, acct_type, interest_rate
                 ) VALUES (?, ?, ?)
             `;
 
-            // TODO: retrieve service_charge from database
-            const serviceCharge = 28.0;
+            // TODO: retrieve interestRate from database
+            const interestRate = 1.02;
 
-            // Define the parameters for the zzz_checking table.
-            const checkingParams = [
-                req.body.acct_id, req.body.acct_type, serviceCharge
+            // Define the parameters for the zzz_saving table.
+            const savingParams = [
+                req.body.acct_id, req.body.acct_type, interestRate
             ];
 
-            db.query(insertCheckingQuery, checkingParams, (err, checkingResults) => {
+            db.query(insertSavingQuery, savingParams, (err, data) => {
                 if (err) {
                     return db.rollback(() => {
                         res.status(500).json(err);
@@ -66,9 +66,9 @@ export const openCheckingAccount = (req, res) => {
                         });
                     }
 
-                    // Respond with a 200 OK status and a success message if the checking account is successfully created.
+                    // Respond with a 200 OK status and a success message if the saving account is successfully created.
                     res.status(200).json({
-                        message: "Checking account successfully created.",
+                        message: "Saving account successfully created.",
                     });
                 });
             });
@@ -76,10 +76,9 @@ export const openCheckingAccount = (req, res) => {
     });
 };
 
-
-export const getCheckingAccount = (req, res) => {
-    // Query to select the account details from zzz_account and zzz_checking tables.
-    const getCheckingAccountQuery = `
+export const getSavingAccount = (req, res) => {
+    // Query to select the account details from zzz_account and zzz_saving tables.
+    const getSavingAccountQuery = `
         SELECT 
             acct_no,
             za.acct_name,
@@ -88,33 +87,33 @@ export const getCheckingAccount = (req, res) => {
             za.acct_bill_city,
             za.acct_bill_street,
             za.acct_bill_zipcode,
-            zc.service_charge
+            zs.interest_rate
         FROM 
             zzz_account AS za
         LEFT JOIN 
-            zzz_checking AS zc ON za.acct_id = zc.acct_id AND za.acct_type = zc.acct_type
+            zzz_saving AS zs ON za.acct_id = zs.acct_id AND za.acct_type = zs.acct_type
         WHERE 
             za.cust_id = ? AND za.acct_type = ?
     `;
 
     // Execute the query with the account ID and account type provided in the request parameters.
-    db.query(getCheckingAccountQuery, [req.body.cust_id, req.body.acct_type], (err, data) => {
+    db.query(getSavingAccountQuery, [req.body.cust_id, req.body.acct_type], (err, data) => {
         // If an error occurs, return a 500 Internal Server Error response.
         if (err) return res.status(500).json(err);
 
         // If no matching account is found, return a 404 Not Found response.
-        if (data.length === 0) return res.status(404).json("Checking account not found");
+        if (data.length === 0) return res.status(404).json("Saving account not found");
 
         // Return the account details with a 200 OK status.
-        const checkingAccountDetails = data[0];
+        const savingAccountDetails = data[0];
         res.status(200).json({
-            message: "Checking account details retrieved successfully.",
-            checkingAccountDetails
+            message: "Saving account details retrieved successfully.",
+            savingAccountDetails
         });
     });
 };
 
-export const updateCheckingAccount = (req, res) => {
+export const updateSavingAccount = (req, res) => {
     // Define update the zzz_account table query
     const updateAccountQuery = `
     UPDATE zzz_account
@@ -175,10 +174,9 @@ export const updateCheckingAccount = (req, res) => {
     });
 };
 
-
-export const deleteCheckingAccount = (req, res) => {
-    const deleteCheckingQuery = `
-        DELETE FROM zzz_checking  WHERE acct_id = (SELECT acct_id FROM zzz_account WHERE cust_id = ? AND acct_type = ?)
+export const deleteSavingAccount = (req, res) => {
+    const deleteSavingQuery = `
+        DELETE FROM zzz_saving  WHERE acct_id = (SELECT acct_id FROM zzz_account WHERE cust_id = ? AND acct_type = ?)
     `;
 
     const deleteAccountQuery = `
@@ -196,8 +194,8 @@ export const deleteCheckingAccount = (req, res) => {
             return res.status(500).json(err);
         }
 
-        // First, attempt to delete the checking account details
-        db.query(deleteCheckingQuery, params, (err, data) => {
+        // First, attempt to delete the saving account details
+        db.query(deleteSavingQuery, params, (err, data) => {
             if (err) {
                 // If there is an error, rollback the transaction
                 return db.rollback(() => {
@@ -231,7 +229,7 @@ export const deleteCheckingAccount = (req, res) => {
                         });
                     }
 
-                    res.status(200).json({ message: "Checking account deleted successfully." });
+                    res.status(200).json({ message: "Saving account deleted successfully." });
                 });
             });
         });
