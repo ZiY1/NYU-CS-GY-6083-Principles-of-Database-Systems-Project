@@ -5,7 +5,7 @@ import { AuthContext } from "../../context/authContext";
 import "./navbar.scss";
 
 const NavBar = () => {
-    const { currentUser, logout } = useContext(AuthContext); // Adjust based on your context structure
+    const { currentUser, logout } = useContext(AuthContext);
 
     const navigate = useNavigate();
 

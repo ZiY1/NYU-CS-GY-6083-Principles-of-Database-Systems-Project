@@ -164,7 +164,7 @@ export const login = (req, res) => {
 
         // Generate a JWT token using the customer ID as the payload.
         // Note: Replace "secretkey" with a secure, environment-specific key for production use.
-        const token = jwt.sign({ id: data[0].cust_id }, "secretkey");
+        const token = jwt.sign({ cust_id: data[0].cust_id }, "secretkey");
 
         // Exclude the password from the response data for security reasons.
         const { user_password, ...others } = data[0];
