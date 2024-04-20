@@ -53,9 +53,6 @@ export const openCheckingAccount = (req, res) => {
                     });
                 }
 
-                // TODO: retrieve service_charge from database
-                const serviceCharge = 28.0;
-
                 const getServiceChargeQuery = `
                     SELECT 
                         service_charge 

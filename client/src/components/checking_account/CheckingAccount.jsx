@@ -3,13 +3,10 @@ import "./checkingaccount.scss";
 import { makeRequest } from '../../axios';
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../../context/authContext";
 import { AccountContext } from "../../context/accountContext";
 import moment from 'moment';
 
 const CheckingAccount = () => {
-
-    const { currentUser } = useContext(AuthContext);
 
     const { hasCheckingAccountSetTrue, hasCheckingAccountSetFalse } = useContext(AccountContext);
 
@@ -42,7 +39,7 @@ const CheckingAccount = () => {
     };
 
     // The function to handle view an existing account
-    const handleCardClick = (accountDetails) => {
+    const handleCardClick = () => {
         navigate('/edit_checking_account/');
     };
 
@@ -76,7 +73,7 @@ const CheckingAccount = () => {
             <div className="checking_account">
                 <h1>Checking Account</h1>
                 {data && (
-                    <div className="card" onClick={() => handleCardClick(data.checkingAccountDetails)}>
+                    <div className="card" onClick={() => handleCardClick()}>
                         <p>Account No: {data.checkingAccountDetails.acct_no}</p>
                         <p>Account Name: {data.checkingAccountDetails.acct_name}</p>
                         <p>Date Opened: {formatDate(data.checkingAccountDetails.acct_date_opened)}</p>
@@ -84,7 +81,7 @@ const CheckingAccount = () => {
                         <p>Billing City: {data.checkingAccountDetails.acct_bill_city}</p>
                         <p>Billing Street: {data.checkingAccountDetails.acct_bill_street}</p>
                         <p>Billing Zipcode: {data.checkingAccountDetails.acct_bill_zipcode}</p>
-                        <p>Service Charge: {`$${Number(data.checkingAccountDetails.service_charge).toFixed(2)}`}</p>
+                        <p>Monthly Service Charge: {`$${Number(data.checkingAccountDetails.service_charge).toFixed(2)}`}</p>
                     </div>
                 )}
             </div>

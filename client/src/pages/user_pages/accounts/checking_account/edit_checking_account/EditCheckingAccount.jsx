@@ -1,10 +1,10 @@
 import "./editcheckingaccount.scss";
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { makeRequest } from "../../../axios";
-import { AccountContext } from "../../../context/accountContext";
+import { makeRequest } from "../../../../../axios";
+import { AccountContext } from "../../../../../context/accountContext";
 import { useNavigate } from "react-router-dom";
 import React, { useContext, useState, useEffect } from "react";
-import AlertBox from '../../../components/altert_box/AlertBox';
+import AlertBox from '../../../../../components/altert_box/AlertBox';
 
 
 const EditCheckingAccount = () => {

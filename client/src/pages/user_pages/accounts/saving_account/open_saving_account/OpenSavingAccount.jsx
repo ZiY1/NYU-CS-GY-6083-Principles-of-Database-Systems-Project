@@ -1,22 +1,22 @@
 import React, { useContext, useState } from "react";
-import "./opencheckingaccount.scss";
+import "./opensavingaccount.scss";
 import { useNavigate } from "react-router-dom";
-import AlertBox from '../../../components/altert_box/AlertBox';
+import AlertBox from '../../../../../components/altert_box/AlertBox';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { makeRequest } from "../../../axios";
-import { AccountContext } from "../../../context/accountContext";
+import { makeRequest } from "../../../../../axios";
+import { AccountContext } from "../../../../../context/accountContext";
 
-const OpenCheckingAccount = () => {
+const OpenSavingAccount = () => {
 
     const navigate = useNavigate();
 
-    const { hasCheckingAccountSetTrue } = useContext(AccountContext);
+    const { hasSavingAccountSetTrue } = useContext(AccountContext);
 
     const queryClient = useQueryClient();
 
     const { isLoading, error, data } = useQuery({
-        queryKey: ['checking_acct_service_charge'],
-        queryFn: () => makeRequest.get("/acct_rate/service_charge").then((res) => res.data),
+        queryKey: ['saving_acct_interest_rate'],
+        queryFn: () => makeRequest.get("/acct_rate/saving_interest_rate").then((res) => res.data),
 
         onError: (err) => {
             console.error("Query error");
@@ -97,18 +97,18 @@ const OpenCheckingAccount = () => {
 
     // Mutations
     const mutation = useMutation({
-        mutationFn: (newCheckingAccountDetails) => {
-            return makeRequest.post("/checking_account/open", newCheckingAccountDetails);
+        mutationFn: (newSavingAccountDetails) => {
+            return makeRequest.post("/saving_account/open", newSavingAccountDetails);
         },
         onSuccess: () => {
             // Invalidate and refetch
-            queryClient.invalidateQueries({ queryKey: ["checking_account"] });
-            hasCheckingAccountSetTrue();
+            queryClient.invalidateQueries({ queryKey: ["saving_account"] });
+            hasSavingAccountSetTrue();
         },
     });
 
     // Function to handle form submission
-    const handleOpenCheckingAccountClick = async (event) => {
+    const handleOpenSavingAccountClick = async (event) => {
         event.preventDefault();
         if (!validateForm()) {
             return; // Stop submission if validation fails
@@ -124,8 +124,8 @@ const OpenCheckingAccount = () => {
     if (error) return <div>Error fetching account details!</div>;
 
     return (
-        <div className="open_checking_account">
-            <h1>Open Checking Account</h1>
+        <div className="open_saving_account">
+            <h1>Open Saving Account</h1>
             {alert.isVisible && <AlertBox type={alert.type} message={alert.message} onClose={hideAlert} />}
             <form>
                 <div className="form-group">
@@ -154,21 +154,21 @@ const OpenCheckingAccount = () => {
                     {errors.acct_bill_zipcode && <p className="error">{errors.acct_bill_zipcode}</p>}
                 </div>
                 <div className="form-group">
-                    <label htmlFor="service_fee">Monthly Account Maintenance Fees</label>
+                    <label htmlFor="service_fee">Monthly Interest Rate</label>
                     <input
                         type="text"
                         id="service_fee"
                         name="service_fee"
-                        value={`$${Number(data.serviceCharge.service_charge).toFixed(2)}`}
+                        value={`$${Number(data.interestRate.interest_rate).toFixed(2)}`}
                         readOnly
                         className="read-only-input"
                     />
                 </div>
-                <button type="submit" onClick={handleOpenCheckingAccountClick}>Agree! Open a Checking Account</button>
+                <button type="submit" onClick={handleOpenSavingAccountClick}>Agree! Open a Saving Account</button>
             </form>
 
         </div>
     );
 };
 
-export default OpenCheckingAccount;
+export default OpenSavingAccount;

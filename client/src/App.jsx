@@ -1,8 +1,10 @@
 import Login from "./pages/user_pages/login/Login";
 import Register from "./pages/user_pages/register/Register";
 import Home from "./pages/user_pages/home/Home";
-import OpenCheckingAccount from "./pages/user_pages/open_checking_account/OpenCheckingAccount.jsx";
-import EditCheckingAccount from "./pages/user_pages/edit_checking_account/EditCheckingAccount.jsx";
+import OpenCheckingAccount from "./pages/user_pages/accounts/checking_account/open_checking_account/OpenCheckingAccount.jsx";
+import EditCheckingAccount from "./pages/user_pages/accounts/checking_account/edit_checking_account/EditCheckingAccount.jsx";
+import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_saving_account/OpenSavingAccount.jsx";
+import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
 
 import {
   createBrowserRouter,
@@ -24,7 +26,7 @@ function App() {
 
   const { currentUser } = useContext(AuthContext);
 
-  const { hasCheckingAccount } = useContext(AccountContext);
+  const { hasCheckingAccount, hasSavingAccount } = useContext(AccountContext);
 
   const queryClient = new QueryClient();
 
@@ -63,6 +65,22 @@ function App() {
     return children;
   };
 
+  const ProtectedOpenSavingAccountRoute = ({ children }) => {
+    if (hasSavingAccount) {
+      return <Navigate to="/" />;
+    }
+
+    return children;
+  };
+
+  const ProtectedEditSavingAccountRoute = ({ children }) => {
+    if (!hasSavingAccount) {
+      return <Navigate to="/" />;
+    }
+
+    return children;
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -90,6 +108,22 @@ function App() {
             <ProtectedEditCheckingAccountRoute>
               <EditCheckingAccount />
             </ProtectedEditCheckingAccountRoute>
+          ),
+        },
+        {
+          path: "/open_saving_account",
+          element: (
+            <ProtectedOpenSavingAccountRoute>
+              <OpenSavingAccount />
+            </ProtectedOpenSavingAccountRoute>
+          ),
+        },
+        {
+          path: "/edit_saving_account",
+          element: (
+            <ProtectedEditSavingAccountRoute>
+              <EditSavingAccount />
+            </ProtectedEditSavingAccountRoute>
           ),
         },
       ],
