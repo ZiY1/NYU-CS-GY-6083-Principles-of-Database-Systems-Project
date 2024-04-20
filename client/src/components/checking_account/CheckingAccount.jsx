@@ -84,7 +84,7 @@ const CheckingAccount = () => {
                         <p>Billing City: {data.checkingAccountDetails.acct_bill_city}</p>
                         <p>Billing Street: {data.checkingAccountDetails.acct_bill_street}</p>
                         <p>Billing Zipcode: {data.checkingAccountDetails.acct_bill_zipcode}</p>
-                        <p>Service Charge: {data.checkingAccountDetails.service_charge}</p>
+                        <p>Service Charge: {`$${Number(data.checkingAccountDetails.service_charge).toFixed(2)}`}</p>
                     </div>
                 )}
             </div>

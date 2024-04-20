@@ -181,7 +181,7 @@ const EditCheckingAccount = () => {
                         type="text"
                         id="service_fee"
                         name="service_fee"
-                        value="28.0$"
+                        value={`$${Number(data.checkingAccountDetails.service_charge).toFixed(2)}`}
                         readOnly
                         className="read-only-input"
                     />

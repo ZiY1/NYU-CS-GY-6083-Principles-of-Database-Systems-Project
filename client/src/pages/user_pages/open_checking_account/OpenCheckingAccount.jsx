@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import "./opencheckingaccount.scss";
 import { useNavigate } from "react-router-dom";
 import AlertBox from '../../../components/altert_box/AlertBox';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { makeRequest } from "../../../axios";
 import { AccountContext } from "../../../context/accountContext";
 
@@ -13,6 +13,17 @@ const OpenCheckingAccount = () => {
     const { hasCheckingAccountSetTrue } = useContext(AccountContext);
 
     const queryClient = useQueryClient();
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['checking_acct_service_charge'],
+        queryFn: () => makeRequest.get("/acct_rate/service_charge").then((res) => res.data),
+
+        onError: (err) => {
+            console.error("Query error");
+        }
+    });
+
+    console.log(data);
 
     // Initialize form state
     const [inputs, setInputs] = useState({
@@ -108,6 +119,10 @@ const OpenCheckingAccount = () => {
         navigate("/");
     };
 
+    if (isLoading) return <div>Loading...</div>;
+
+    if (error) return <div>Error fetching account details!</div>;
+
     return (
         <div className="open_checking_account">
             <h1>Open Checking Account</h1>
@@ -139,7 +154,15 @@ const OpenCheckingAccount = () => {
                     {errors.acct_bill_zipcode && <p className="error">{errors.acct_bill_zipcode}</p>}
                 </div>
                 <div className="form-group">
-                    <p>Monthly account maintenance fees: 28.0$</p>
+                    <label htmlFor="service_fee">Monthly Account Maintenance Fees</label>
+                    <input
+                        type="text"
+                        id="service_fee"
+                        name="service_fee"
+                        value={`$${Number(data.serviceCharge.service_charge).toFixed(2)}`}
+                        readOnly
+                        className="read-only-input"
+                    />
                 </div>
                 <button type="submit" onClick={handleOpenCheckingAccountClick}>Agree! Open a Checking Account</button>
             </form>

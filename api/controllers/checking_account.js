@@ -1,7 +1,8 @@
 import { db } from '../connect.js';
 import jwt from "jsonwebtoken";
-import { AccountTypes } from '../../client/src/constants/account_types.js';
+import { AccountTypes } from '../constants/account_constants.js';
 import { generateAccountNumber, getCurrentMySQLDateTime } from '../utils/account_utils.js';
+import { AccountRateID } from '../constants/account_constants.js';
 
 export const openCheckingAccount = (req, res) => {
     const token = req.cookies.accessToken;
@@ -52,39 +53,61 @@ export const openCheckingAccount = (req, res) => {
                     });
                 }
 
-                // If the account is successfully created, insert details into zzz_checking.
-                const insertCheckingQuery = `
-                    INSERT INTO zzz_checking (
-                        acct_id, acct_type, service_charge
-                    ) VALUES (?, ?, ?)
-                `;
-
                 // TODO: retrieve service_charge from database
                 const serviceCharge = 28.0;
 
-                // Define the parameters for the zzz_checking table.
-                const checkingParams = [
-                    userInfo.cust_id, AccountTypes.CHECKING, serviceCharge
-                ];
+                const getServiceChargeQuery = `
+                    SELECT 
+                        service_charge 
+                    FROM 
+                        zzz_acct_rate 
+                    WHERE 
+                        rate_id = ?;
+                `;
 
-                db.query(insertCheckingQuery, checkingParams, (err, checkingResults) => {
-                    if (err) {
-                        return db.rollback(() => {
-                            res.status(500).json(err);
-                        });
-                    }
+                db.query(getServiceChargeQuery, [AccountRateID.RATE_ID], (err, data) => {
+                    // If an error occurs, return a 500 Internal Server Error response.
+                    if (err) return res.status(500).json(err);
 
-                    // Commit the transaction if both insert operations succeed.
-                    db.commit((err) => {
+                    // If no matching account is found, return a 404 Not Found response.
+                    if (data.length === 0) return res.status(404).json("Some record not found");
+
+                    // Return the account details with a 200 OK status.
+                    const serviceCharge = data[0].service_charge;
+
+                    console.log(serviceCharge);
+
+                    // If the account is successfully created, insert details into zzz_checking.
+                    const insertCheckingQuery = `
+                        INSERT INTO zzz_checking (
+                            acct_id, acct_type, service_charge
+                        ) VALUES (?, ?, ?)
+                    `;
+
+                    // Define the parameters for the zzz_checking table.
+                    const checkingParams = [
+                        userInfo.cust_id, AccountTypes.CHECKING, serviceCharge
+                    ];
+
+                    db.query(insertCheckingQuery, checkingParams, (err, checkingResults) => {
                         if (err) {
                             return db.rollback(() => {
                                 res.status(500).json(err);
                             });
                         }
 
-                        // Respond with a 200 OK status and a success message if the checking account is successfully created.
-                        res.status(200).json({
-                            message: "Checking account successfully created.",
+                        // Commit the transaction if both insert operations succeed.
+                        db.commit((err) => {
+                            if (err) {
+                                return db.rollback(() => {
+                                    res.status(500).json(err);
+                                });
+                            }
+
+                            // Respond with a 200 OK status and a success message if the checking account is successfully created.
+                            res.status(200).json({
+                                message: "Checking account successfully created.",
+                            });
                         });
                     });
                 });
