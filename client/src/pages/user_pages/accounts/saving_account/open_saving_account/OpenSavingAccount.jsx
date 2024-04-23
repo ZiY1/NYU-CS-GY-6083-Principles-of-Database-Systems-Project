@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import "./opensavingaccount.scss";
 import { useNavigate } from "react-router-dom";
 import AlertBox from '../../../../../components/altert_box/AlertBox';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';

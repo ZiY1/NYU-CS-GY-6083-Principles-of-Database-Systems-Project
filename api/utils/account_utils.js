@@ -14,3 +14,12 @@ export const getCurrentMySQLDateTime = () => {
     return localTime.toISOString().slice(0, 19).replace('T', ' ');
 };
 
+export const calculateMonthlyLoanPayment = (loanAmount, monthlyLoanRate, loanMonth) => {
+    const monthlyRate = monthlyLoanRate / 100;  // Divide by 100 to convert percentage to decimal
+
+    // Calculate the monthly payment using the formula for an amortized loan
+    const payment = (monthlyRate * loanAmount) / (1 - Math.pow(1 + monthlyRate, -loanMonth));
+
+    return payment;
+}
+

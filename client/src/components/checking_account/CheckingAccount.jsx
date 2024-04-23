@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import "./checkingaccount.scss";
 import { makeRequest } from '../../axios';
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";

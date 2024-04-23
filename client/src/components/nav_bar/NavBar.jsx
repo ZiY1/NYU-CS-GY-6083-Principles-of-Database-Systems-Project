@@ -1,8 +1,6 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'; // Make sure to import axios
 import { AuthContext } from "../../context/authContext";
-import "./navbar.scss";
 
 const NavBar = () => {
     const { currentUser, logout } = useContext(AuthContext);

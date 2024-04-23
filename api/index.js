@@ -5,6 +5,8 @@ import checkingAccountRoutes from "./routes/checking_account.js";
 import savingAccountRoutes from "./routes/saving_account.js";
 import loanAccountRoutes from "./routes/loan_account.js";
 import acctRateRoutes from "./routes/acct_rate.js";
+import univRouters from "./routes/university.js";
+import insurCoRouters from "./routes/insurance_company.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -39,6 +41,8 @@ app.use("/api/checking_account", checkingAccountRoutes);
 app.use("/api/saving_account", savingAccountRoutes);
 app.use("/api/loan_account", loanAccountRoutes);
 app.use("/api/acct_rate", acctRateRoutes);
+app.use("/api/university", univRouters);
+app.use("/api/insur_co", insurCoRouters);
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {

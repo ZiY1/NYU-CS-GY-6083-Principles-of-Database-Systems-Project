@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/authContext";
 import CheckingAccount from "../../../components/checking_account/CheckingAccount";
 import SavingAccount from "../../../components/saving_account/SavingAccount";
+import LoanAccount from "../../../components/loan_account/LoanAccount";
 
 const Home = () => {
   const { currentUser } = useContext(AuthContext);
@@ -12,6 +13,7 @@ const Home = () => {
     <div className="home">
       <CheckingAccount/>
       <SavingAccount/>
+      <LoanAccount/>
     </div>
   );
 };

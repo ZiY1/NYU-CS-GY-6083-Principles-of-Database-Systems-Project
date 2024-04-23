@@ -39,8 +39,6 @@ export const openCheckingAccount = (req, res) => {
             req.body.acct_bill_zipcode, userInfo.cust_id,
         ];
 
-
-
         // Start the transaction.
         db.beginTransaction((err) => {
             if (err) return res.status(500).json(err);
@@ -72,7 +70,7 @@ export const openCheckingAccount = (req, res) => {
                     // Return the account details with a 200 OK status.
                     const serviceCharge = data[0].service_charge;
 
-                    console.log(serviceCharge);
+                    // console.log(serviceCharge);
 
                     // If the account is successfully created, insert details into zzz_checking.
                     const insertCheckingQuery = `

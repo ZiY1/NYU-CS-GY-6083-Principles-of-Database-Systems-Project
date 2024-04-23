@@ -37,14 +37,29 @@ export const AccountContextProvider = ({ children }) => {
         localStorage.setItem('hasSavingAccount', JSON.stringify(hasSavingAccount));
     }, [hasSavingAccount]);
 
-    
+    // Loan Account Context
+    const [hasLoanAccount, setHasLoanAccount] = useState(
+        JSON.parse(localStorage.getItem('hasLoanAccount')) || false
+    );
+
+    const hasLoanAccountSetTrue = () => {
+        setHasLoanAccount(true);
+    };
+
+    const hasLoanAccountSetFalse = () => {
+        setHasLoanAccount(false);
+    };
+
+    useEffect(() => {
+        localStorage.setItem('hasLoanAccount', JSON.stringify(hasLoanAccount));
+    }, [hasLoanAccount]);
 
     
-
     return (
         <AccountContext.Provider value={{ 
             hasCheckingAccount, hasCheckingAccountSetTrue, hasCheckingAccountSetFalse,
-            hasSavingAccount, hasSavingAccountSetTrue, hasSavingAccountSetFalse
+            hasSavingAccount, hasSavingAccountSetTrue, hasSavingAccountSetFalse,
+            hasLoanAccount, hasLoanAccountSetTrue, hasLoanAccountSetFalse
             }}>
             {children}
         </AccountContext.Provider>

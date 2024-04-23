@@ -1,4 +1,3 @@
-import "./editsavingaccount.scss";
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { makeRequest } from "../../../../../axios";
 import { AccountContext } from "../../../../../context/accountContext";
