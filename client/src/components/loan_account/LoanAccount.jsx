@@ -90,7 +90,8 @@ const LoanAccount = () => {
             hasLoanAccountSetFalse();
             // Render the button to open a new loan account
             return (
-                <div>
+                <div className="loan_account_button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
                     <Button onClick={handleOpenLoanAccountClick}>Open a Loan Account</Button>
                 </div>
             );

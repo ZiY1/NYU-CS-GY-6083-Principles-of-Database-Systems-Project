@@ -32,6 +32,12 @@ const Button = styled.button`
     animation: ${jump} 0.2s ease-out forwards;
   }
 `;
+const CenterDiv = styled.div`
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+`;
 
 const Wrapper2 = styled.div`
     display: flex;
@@ -65,7 +71,7 @@ const StyledSpan = styled.span`
   color: #333; /* Change the text color */
   text-transform: uppercase; /* Make the text uppercase */
   letter-spacing: 1px; /* Add some letter spacing */
-  padding: 0.5rem 5rem; /* Add some padding */
+  
 
 `;
 
@@ -88,31 +94,27 @@ const NavBar = () => {
             // }
         }
     };
-
     return (
-        <div>
-            <div className='left'>
-                <Link to="/">
-                    <StyledSpan>S A F E B a n k</StyledSpan>
-                </Link>
+      <div >
+       
+        <Wrapper2 className='navbar' >
+          
+          
+          <div style={{backgroundColor: '#fff'}}><Link to="/">
+          <StyledSpan style={{backgroundColor: '#fff'}}>S A F E B a n k</StyledSpan>
+        </Link>
+          </div>
+          
+  
+          {currentUser && (
+            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+              <div className="user">Hello: {currentUser.user_name}</div>
+              <Button type="button" onClick={handleLogout}>Logout</Button>
             </div>
-            <br></br>
-            <Wrapper2 className='navbar'>
-
-                {currentUser &&
-                    <div className="user">
-
-                        Hello: {currentUser.user_name}
-
-                    </div>
-                }
-               
-                <Button type="button" onClick={handleLogout}>Logout</Button>
-
-            </Wrapper2>
-            <br></br>
-        </div>
-
+          )}
+        </Wrapper2>
+        <br />
+      </div>
     );
 };
 

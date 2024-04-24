@@ -84,7 +84,8 @@ const SavingAccount = () => {
             hasSavingAccountSetFalse();
             // Render the button to open a new saving account
             return (
-                <div>
+                <div className="saving_account_button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
                     <Button onClick={handleOpenSavingAccountClick}>Open a Saving Account</Button>
                 </div>
             );
@@ -96,7 +97,7 @@ const SavingAccount = () => {
 
 
     return (
-        <div className="saving_account">
+        <div className="saving_account" style={"flex-center"}>
             <div className="saving_account">
                 <h1>Saving Account</h1>
                 {data && (

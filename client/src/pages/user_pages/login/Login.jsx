@@ -150,6 +150,7 @@ const Login = () => {
     <>
         {alert.isVisible && <AlertBox type={alert.type} message={alert.message} onClose={hideAlert} />}
         <Wrapper>
+        
           <Form onSubmit={handleLogin}>
             <h1>Sign in</h1>
             <p>to continue to The Home Page</p>
