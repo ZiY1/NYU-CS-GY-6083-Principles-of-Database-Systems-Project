@@ -5,7 +5,31 @@ import OpenCheckingAccount from "./pages/user_pages/accounts/checking_account/op
 import EditCheckingAccount from "./pages/user_pages/accounts/checking_account/edit_checking_account/EditCheckingAccount.jsx";
 import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_saving_account/OpenSavingAccount.jsx";
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
+import styled, { createGlobalStyle } from "styled-components";
+const GlobalStyle = createGlobalStyle`
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background: #FDF9F3;
+  }
 
+  body, html, #root {
+    height: 100%;
+    font-family: -apple-system, Ubuntu , BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  
+
+`;
 import {
   createBrowserRouter,
   Navigate,
@@ -33,10 +57,12 @@ function App() {
   const Layout = () => {
     return (
       <QueryClientProvider client={queryClient}>
-        <div>
+
+        <Wrapper>
           <NavBar />
           <Outlet />
-        </div>
+        </Wrapper>
+
       </QueryClientProvider>
     );
   };
@@ -139,9 +165,10 @@ function App() {
   ]);
 
   return (
-    <div>
+    <>
+      <GlobalStyle />
       <RouterProvider router={router} />
-    </div>
+    </>
   );
 }
 
