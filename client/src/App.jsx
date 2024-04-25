@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    background: #FDF9F3;
+    
   }
 
   body, html, #root {
@@ -168,7 +168,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
+    <GlobalStyle></GlobalStyle>
       <RouterProvider router={router} />
     </>
   );

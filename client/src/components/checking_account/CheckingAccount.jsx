@@ -116,7 +116,7 @@ const CheckingAccount = () => {
       hasCheckingAccountSetFalse();
       // Render the button to open a new checking account
       return (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Button onClick={handleOpenCheckingAccountClick}>
             Open a Checking Account
           </Button>

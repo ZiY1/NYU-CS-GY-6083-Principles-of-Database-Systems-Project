@@ -5,20 +5,21 @@ import CheckingAccount from "../../../components/checking_account/CheckingAccoun
 import SavingAccount from "../../../components/saving_account/SavingAccount";
 import LoanAccount from "../../../components/loan_account/LoanAccount";
 
-
 const Home = () => {
   const { currentUser } = useContext(AuthContext);
 
   return (
-    <div className="home">
-
+    <div className="home" style={{ gap: "0px", margin: "0px", padding: "0px" }}>
+      <br></br>
+      <br></br>
       <CheckingAccount />
-      <br></br>
+      <div></div>
+
       <SavingAccount />
-      <br></br>
+      <div></div>
       <LoanAccount />
-
-
+      <br></br>
+      <br></br>
     </div>
   );
 };

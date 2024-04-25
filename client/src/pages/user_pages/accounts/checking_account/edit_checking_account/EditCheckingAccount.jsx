@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { makeRequest } from "../../../../../axios";
 import { AccountContext } from "../../../../../context/accountContext";
 
-import AlertBox from "../../../../../components/altert_box/AlertBox";
-
 import { Paper, Typography, TextField, Grid } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import styled, { keyframes } from "styled-components";
 const StyledPaper = styled(Paper)`
   position: relative;
@@ -204,13 +204,14 @@ const EditCheckingAccount = () => {
 
   return (
     <div className="edit_checking_account">
-      {alert.isVisible && (
-        <AlertBox
-          type={alert.type}
-          message={alert.message}
-          onClose={hideAlert}
-        />
-      )}
+    {alert.isVisible && (
+      <Snackbar open={alert.isVisible} autoHideDuration={6000} onClose={hideAlert}>
+        <Alert onClose={hideAlert} severity={alert.type} sx={{ width: '100%' }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
+    )}
+    
       <StyledPaper elevation={3}>
         <Typography
           variant="h5"
@@ -287,7 +288,7 @@ const EditCheckingAccount = () => {
           <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
             <TextField
               label="Billing Zip Code"
-              name="acct_bill_street"
+              name="acct_bill_zipcode"
               value={inputs.acct_bill_zipcode}
               onChange={handleChange}
               variant="standard"
