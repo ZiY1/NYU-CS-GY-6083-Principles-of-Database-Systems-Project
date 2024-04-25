@@ -6,6 +6,8 @@ import EditCheckingAccount from "./pages/user_pages/accounts/checking_account/ed
 import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_saving_account/OpenSavingAccount.jsx";
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
 import styled, { createGlobalStyle } from "styled-components";
+
+
 const GlobalStyle = createGlobalStyle`
   * {
     padding: 0;

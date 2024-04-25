@@ -1,16 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import { makeRequest } from '../../axios';
+import { useQuery } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AccountContext } from "../../context/accountContext";
-import moment from 'moment';
-
+import moment from "moment";
 import styled, { keyframes } from "styled-components";
-import { Paper, Grid, Typography, Box } from '@mui/material';
+import { Paper, Grid, Typography, Box } from "@mui/material";
+
 const StyledPaper = styled(Paper)`
   position: relative; // Make the paper a reference for positioning
   padding: 20px; // Ensure padding for internal content
-  width: 80%; 
+  width: 80%;
   max-width: 900px;
   margin: auto;
   margin-top: 4rem;
@@ -66,145 +66,215 @@ const Button = styled.button`
 `;
 
 const CheckingAccount = () => {
+  const { hasCheckingAccountSetTrue, hasCheckingAccountSetFalse } =
+    useContext(AccountContext);
 
-    const { hasCheckingAccountSetTrue, hasCheckingAccountSetFalse } = useContext(AccountContext);
+  const navigate = useNavigate();
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["checking_account"],
+    queryFn: () =>
+      makeRequest.get("/checking_account/get").then((res) => res.data),
+    retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
+    // onSuccess: (data) => {
+    //     console.log('Query succeeded, setting account status to true');
+    //     hasCheckingAccountSetTrue();
+    // },
+    onError: (err) => {
+      hasCheckingAccountSetFalse();
+      console.error("Query error");
+    },
+  });
 
-    const navigate = useNavigate();
-    const { isLoading, error, data } = useQuery({
-        queryKey: ['checking_account'],
-        queryFn: () => makeRequest.get("/checking_account/get").then((res) => res.data),
-        retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
-        // onSuccess: (data) => {
-        //     console.log('Query succeeded, setting account status to true');
-        //     hasCheckingAccountSetTrue();
-        // },
-        onError: (err) => {
-            hasCheckingAccountSetFalse();
-            console.error("Query error");
-        }
-    });
-
-    useEffect(() => {
-        if (data) {
-            console.log('Data available, setting account status to true:', data);
-            hasCheckingAccountSetTrue();
-        }
-    }, [data, hasCheckingAccountSetTrue]);
-
-    // The function to handle opening a new account
-    const handleOpenCheckingAccountClick = () => {
-        navigate('/open_checking_account/');
-    };
-
-    // The function to handle view an existing account
-    const handleCardClick = () => {
-        navigate('/edit_checking_account/');
-    };
-
-    const formatDate = (dateString) => {
-        return moment(dateString).format('MMMM DD, YYYY, hh:mm:ss A'); // Example format
-    };
-
-    if (isLoading) {
-        return <div>Loading...</div>;
+  useEffect(() => {
+    if (data) {
+      console.log("Data available, setting account status to true:", data);
+      hasCheckingAccountSetTrue();
     }
+  }, [data, hasCheckingAccountSetTrue]);
 
-    if (error) {
-        // Check if the error status is 404
-        if (error.response && error.response.status === 404) {
-            hasCheckingAccountSetFalse();
-            // Render the button to open a new checking account
-            return (
-                <div>
-                    <Button onClick={handleOpenCheckingAccountClick}>Open a Checking Account</Button>
-                </div>
-            );
-        } else {
-            // Handle other errors
-            return <div>An error occurred: {error.message}</div>;
-        }
+  // The function to handle opening a new account
+  const handleOpenCheckingAccountClick = () => {
+    navigate("/open_checking_account/");
+  };
+
+  // The function to handle view an existing account
+  const handleCardClick = () => {
+    navigate("/edit_checking_account/");
+  };
+
+  const formatDate = (dateString) => {
+    return moment(dateString).format("MMMM DD, YYYY, hh:mm:ss A"); // Example format
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    // Check if the error status is 404
+    if (error.response && error.response.status === 404) {
+      hasCheckingAccountSetFalse();
+      // Render the button to open a new checking account
+      return (
+        <div>
+          <Button onClick={handleOpenCheckingAccountClick}>
+            Open a Checking Account
+          </Button>
+        </div>
+      );
+    } else {
+      // Handle other errors
+      return <div>An error occurred: {error.message}</div>;
     }
+  }
 
-    return (
-            <div className="checking_account">
+  return (
+    <div className="checking_account">
+      {data && (
+        <div className="card">
+          <StyledPaper elevation={3}>
+            <Typography
+              variant="h5"
+              component="h3"
+              sx={{ mb: 2 }}
+              style={{ backgroundColor: "#f3f7fd" }}
+            >
+              Checking Account Details
+            </Typography>
+            <Grid container spacing={2} style={{ backgroundColor: "#f3f7fd" }}>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Account No:
+                    </strong>{" "}
+                    {data ? data.checkingAccountDetails.acct_no : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Account Name:
+                    </strong>{" "}
+                    {data ? data.checkingAccountDetails.acct_name : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Date Opened:
+                    </strong>{" "}
+                    {data
+                      ? formatDate(data.checkingAccountDetails.acct_date_opened)
+                      : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Billing State:
+                    </strong>{" "}
+                    {data ? data.checkingAccountDetails.acct_bill_state : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Billing City:
+                    </strong>{" "}
+                    {data ? data.checkingAccountDetails.acct_bill_city : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
 
-                {data && (
-                    <div className="card"  >
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>    
-                            <br></br>
-                         
-                        </div>
+              <Grid item xs={12} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Billing Street:
+                    </strong>{" "}
+                    {data
+                      ? data.checkingAccountDetails.acct_bill_street
+                      : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Billing Zipcode:
+                    </strong>{" "}
+                    {data
+                      ? data.checkingAccountDetails.acct_bill_zipcode
+                      : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} style={{ backgroundColor: "#f3f7fd" }}>
+                <Box>
+                  <Typography
+                    style={{ backgroundColor: "#f3f7fd" }}
+                    variant="body1"
+                  >
+                    <strong style={{ backgroundColor: "#f3f7fd" }}>
+                      Monthly Service Charge:
+                    </strong>{" "}
+                    {data
+                      ? `$${Number(
+                          data.checkingAccountDetails.service_charge
+                        ).toFixed(2)}`
+                      : "N/A"}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+            <br></br>
 
-                        <StyledPaper 
-                            elevation={3}
-                            
-                        >
-                        <Typography variant="h5" component="h3" sx={{ mb: 2, }} style={{backgroundColor: '#f3f7fd'}} >
-                        Checking Account Details
-                </Typography>
-                            <Grid container spacing={2} style={{backgroundColor: '#f3f7fd'}}>
+            <br></br>
 
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Account No:</strong> {data ? data.checkingAccountDetails.acct_no : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Account Name:</strong> {data ? data.checkingAccountDetails.acct_name : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Date Opened:</strong> {data ? formatDate(data.checkingAccountDetails.acct_date_opened) : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Billing State:</strong> {data ? data.checkingAccountDetails.acct_bill_state : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Billing City:</strong> {data ? data.checkingAccountDetails.acct_bill_city : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-
-                                <Grid item xs={12} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box>
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Billing Street:</strong> {data ? data.checkingAccountDetails.acct_bill_street : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Billing Zipcode:</strong> {data ? data.checkingAccountDetails.acct_bill_zipcode : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} sm={6} style={{backgroundColor: '#f3f7fd'}}>
-                                    <Box >
-                                        <Typography style={{backgroundColor: '#f3f7fd'}} variant="body1"><strong style={{backgroundColor: '#f3f7fd'}}>Monthly Service Charge:</strong> {data ? `$${Number(data.checkingAccountDetails.service_charge).toFixed(2)}` : 'N/A'}</Typography>
-                                    </Box>
-                                </Grid>
-                                
-                            </Grid>
-                            <br></br>
-                            
-                            <br></br>
-
-                            <br></br>
-                            <CornerButton onClick={() => {handleCardClick()}}>
-                                EDIT 
-                            </CornerButton>
-                        </StyledPaper>
-                    </div>
-                )}
-            </div>
-
-    );
+            <br></br>
+            <CornerButton
+              onClick={() => {
+                handleCardClick();
+              }}
+            >
+              EDIT
+            </CornerButton>
+          </StyledPaper>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default CheckingAccount;
