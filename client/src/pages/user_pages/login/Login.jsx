@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/authContext";
 import AlertBox from '../../../components/altert_box/AlertBox';
 import styled, { keyframes } from "styled-components";
-
+import Wrapper from "../../../components/Wrapper/Wrapper"
 const jump = keyframes`
   from{
     transform: translateY(0)
@@ -11,15 +11,6 @@ const jump = keyframes`
   to{
     transform: translateY(-3px)
   }
-`;
-
-
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
 `;
 
 const Form = styled.form`
@@ -174,7 +165,7 @@ const Login = () => {
             />
             {errors.password && <p className="error">{errors.password}</p>}
             <Button type="submit">Login</Button>
-            <div className="sign-up">
+            <div className="sign-up" style={{ padding: "10px" }}>
               No account? <Link to="/register">Register</Link>
             </div>
           </Form>

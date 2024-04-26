@@ -5,18 +5,9 @@ import { useContext, useEffect } from "react";
 import { AccountContext } from "../../context/accountContext";
 import moment from "moment";
 import styled, { keyframes } from "styled-components";
-import { Paper, Grid, Typography, Box } from "@mui/material";
+import {Grid, Typography, Box } from "@mui/material";
+import StyledPaper from "../StyledPaper/StyledPaper"
 
-const StyledPaper = styled(Paper)`
-  position: relative; // Make the paper a reference for positioning
-  padding: 20px; // Ensure padding for internal content
-  width: 80%;
-  max-width: 900px;
-  margin: auto;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
-  background: #f3f7fd !important;
-`;
 const jump = keyframes`
   from{
     transform: translateY(0)

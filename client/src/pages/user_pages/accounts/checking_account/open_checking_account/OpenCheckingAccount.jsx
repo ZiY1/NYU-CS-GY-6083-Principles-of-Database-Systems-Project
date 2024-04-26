@@ -1,11 +1,10 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AlertBox from "../../../../../components/altert_box/AlertBox";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { makeRequest } from "../../../../../axios";
 import { AccountContext } from "../../../../../context/accountContext";
 
-import { Paper, Typography, TextField, Grid } from "@mui/material";
+import { Paper, Typography, TextField, Grid, Snackbar, Alert } from "@mui/material";
 import styled, { keyframes } from "styled-components";
 
 const StyledPaper = styled(Paper)`
@@ -173,6 +172,8 @@ const OpenCheckingAccount = () => {
   if (isLoading) return <div>Loading...</div>;
 
   if (error) return <div>Error fetching account details!</div>;
+
+
   return (
     <div className="open_checking_account">
       {alert.isVisible && (
