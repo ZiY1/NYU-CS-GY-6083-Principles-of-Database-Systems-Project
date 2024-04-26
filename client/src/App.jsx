@@ -7,7 +7,6 @@ import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_s
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
 import styled, { createGlobalStyle } from "styled-components";
 
-
 const GlobalStyle = createGlobalStyle`
   * {
     padding: 0;
@@ -29,8 +28,6 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  
-
 `;
 import {
   createBrowserRouter,
@@ -40,16 +37,11 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
-import { AccountContext } from './context/accountContext.jsx';
+import { AccountContext } from "./context/accountContext.jsx";
 import NavBar from "./components/nav_bar/NavBar";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-
   const { currentUser } = useContext(AuthContext);
 
   const { hasCheckingAccount, hasSavingAccount } = useContext(AccountContext);
@@ -59,12 +51,10 @@ function App() {
   const Layout = () => {
     return (
       <QueryClientProvider client={queryClient}>
-
         <Wrapper>
           <NavBar />
           <Outlet />
         </Wrapper>
-
       </QueryClientProvider>
     );
   };
@@ -168,7 +158,7 @@ function App() {
 
   return (
     <>
-    <GlobalStyle></GlobalStyle>
+      <GlobalStyle></GlobalStyle>
       <RouterProvider router={router} />
     </>
   );
