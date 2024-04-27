@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../connect.js';
+
 const Customer = sequelize.define('Customer', {
     cust_id: {
         type: DataTypes.INTEGER,

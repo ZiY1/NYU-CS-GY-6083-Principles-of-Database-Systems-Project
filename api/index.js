@@ -15,12 +15,13 @@ import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
 import Customer from './models/Customer.js';
+import Account from './models/Account.js';
 
 // AdminJS setup
 AdminJS.registerAdapter(AdminJSSequelize);
 const adminJS = new AdminJS({
   databases: [sequelize],
-  resources: [Customer],
+  resources: [Customer, Account],
   rootPath: "/admin",
   branding: {
     companyName: "SAFE Bank",
