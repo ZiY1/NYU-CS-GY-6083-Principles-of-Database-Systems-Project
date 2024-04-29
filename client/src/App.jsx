@@ -5,6 +5,9 @@ import OpenCheckingAccount from "./pages/user_pages/accounts/checking_account/op
 import EditCheckingAccount from "./pages/user_pages/accounts/checking_account/edit_checking_account/EditCheckingAccount.jsx";
 import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_saving_account/OpenSavingAccount.jsx";
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
+import OpenLoanAccount from "./pages/user_pages/accounts/loan_account/open_loan_account/OpenLoanAccount.jsx";
+import EditLoanAccount from "./pages/user_pages/accounts/loan_account/edit_loan_account/EditLoanAccount.jsx";
+import Profile from "./pages/user_pages/profile/Profile.jsx";
 
 import {
   createBrowserRouter,
@@ -14,19 +17,15 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
-import { AccountContext } from './context/accountContext.jsx';
+import { AccountContext } from "./context/accountContext.jsx";
 import NavBar from "./components/nav_bar/NavBar";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-
   const { currentUser } = useContext(AuthContext);
 
-  const { hasCheckingAccount, hasSavingAccount } = useContext(AccountContext);
+  const { hasCheckingAccount, hasSavingAccount, hasLoanAccount } =
+    useContext(AccountContext);
 
   const queryClient = new QueryClient();
 
@@ -81,6 +80,31 @@ function App() {
     return children;
   };
 
+  const ProtectedOpenLoanAccountRoute = ({ children }) => {
+    if (hasLoanAccount) {
+      return <Navigate to="/" />;
+    }
+
+    return children;
+  };
+
+  const ProtectedEditLoanAccountRoute = ({ children }) => {
+    if (!hasLoanAccount) {
+      return <Navigate to="/" />;
+    }
+
+    return children;
+  };
+
+  // Define route for profile page
+  const ProtectedProfileRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to="/login" />;
+    }
+
+    return children;
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -124,6 +148,30 @@ function App() {
             <ProtectedEditSavingAccountRoute>
               <EditSavingAccount />
             </ProtectedEditSavingAccountRoute>
+          ),
+        },
+        {
+          path: "/open_loan_account",
+          element: (
+            <ProtectedOpenLoanAccountRoute>
+              <OpenLoanAccount />
+            </ProtectedOpenLoanAccountRoute>
+          ),
+        },
+        {
+          path: "/edit_loan_account",
+          element: (
+            <ProtectedEditLoanAccountRoute>
+              <EditLoanAccount />
+            </ProtectedEditLoanAccountRoute>
+          ),
+        },
+        {
+          path: "/profile",
+          element: (
+            <ProtectedProfileRoute>
+              <Profile />
+            </ProtectedProfileRoute>
           ),
         },
       ],

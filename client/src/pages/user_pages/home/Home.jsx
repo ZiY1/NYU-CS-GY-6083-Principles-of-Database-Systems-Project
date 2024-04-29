@@ -11,9 +11,14 @@ const Home = () => {
 
   return (
     <div className="home">
-      <CheckingAccount/>
-      <SavingAccount/>
-      <LoanAccount/>
+      {/* Add Link button */}
+      <Link to="/profile" className="button">
+        My Profile
+      </Link>
+
+      <CheckingAccount />
+      <SavingAccount />
+      <LoanAccount />
     </div>
   );
 };
