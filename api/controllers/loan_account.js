@@ -325,7 +325,7 @@ export const updateLoanAccount = (req, res) => {
                 }
 
                 // Since we are not updating zzz_loan fields, check if other related updates are needed
-                if (req.body.loan_type === AccountTypes.STUDENT_LOAN) {
+                if (req.query.loan_type === AccountTypes.STUDENT_LOAN) {
                     const updateStudentLoanQuery = `
                         UPDATE zzz_stud_ln
                         SET stud_id = ?, 
@@ -370,7 +370,7 @@ export const updateLoanAccount = (req, res) => {
                             res.status(200).json({ message: "Student loan account updated successfully." });
                         });
                     });
-                } else if (req.body.loan_type === AccountTypes.HOME_LOAN) {
+                } else if (req.query.loan_type === AccountTypes.HOME_LOAN) {
                     const updateHomeLoanQuery = `
                         UPDATE zzz_home_ln
                         SET built_year = ?, 
@@ -464,7 +464,7 @@ export const deleteLoanAccount = (req, res) => {
                 return res.status(500).json({ error: err, message: "Failed to start transaction for deleting loan account." });
             }
 
-            if (req.body.loan_type === AccountTypes.STUDENT_LOAN) {
+            if (req.query.loan_type === AccountTypes.STUDENT_LOAN) {
                 // Execute the deletion query for specific loan details
                 db.query(deleteStudentLoanQuery, params, (err, data) => {
                     if (err) {
@@ -506,7 +506,7 @@ export const deleteLoanAccount = (req, res) => {
                         });
                     });
                 });
-            } else if (req.body.loan_type === AccountTypes.HOME_LOAN) {
+            } else if (req.query.loan_type === AccountTypes.HOME_LOAN) {
                 // Execute the deletion query for specific loan details
                 db.query(deleteHomeLoanQuery, params, (err, data) => {
                     if (err) {
