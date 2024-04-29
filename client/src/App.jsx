@@ -7,6 +7,30 @@ import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_s
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
 import OpenLoanAccount from "./pages/user_pages/accounts/loan_account/open_loan_account/OpenLoanAccount.jsx";
 import EditLoanAccount from "./pages/user_pages/accounts/loan_account/edit_loan_account/EditLoanAccount.jsx";
+import styled, { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    
+  }
+
+  body, html, #root {
+    height: 100%;
+    font-family: -apple-system, Ubuntu , BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+`;
 
 import {
   createBrowserRouter,
@@ -16,16 +40,11 @@ import {
 } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
-import { AccountContext } from './context/accountContext.jsx';
+import { AccountContext } from "./context/accountContext.jsx";
 import NavBar from "./components/nav_bar/NavBar";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-
   const { currentUser } = useContext(AuthContext);
 
   const { hasCheckingAccount, hasSavingAccount, hasLoanAccount } = useContext(AccountContext);
@@ -35,10 +54,10 @@ function App() {
   const Layout = () => {
     return (
       <QueryClientProvider client={queryClient}>
-        <div>
+        <Wrapper>
           <NavBar />
           <Outlet />
-        </div>
+        </Wrapper>
       </QueryClientProvider>
     );
   };
@@ -173,9 +192,10 @@ function App() {
   ]);
 
   return (
-    <div>
+    <>
+      <GlobalStyle></GlobalStyle>
       <RouterProvider router={router} />
-    </div>
+    </>
   );
 }
 

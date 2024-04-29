@@ -6,6 +6,38 @@ import { AccountContext } from "../../context/accountContext";
 import moment from 'moment';
 import { AccountTypes } from "../../../../api/constants/account_constants.js";
 
+import styled, { keyframes } from "styled-components";
+
+const jump = keyframes`
+  from{
+    transform: translateY(0)
+  }
+  to{
+    transform: translateY(-3px)
+  }
+`;
+const Button = styled.button`
+  width: 250px;
+  max-width: 100%;
+  text-align: center;
+  padding: 11px 13px;
+  color: rgb(253, 249, 243);
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #f03d4e;
+  border: none;
+  border-radius: 3px;
+  outline: 0;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: rgb(200, 50, 70);
+    animation: ${jump} 0.2s ease-out forwards;
+  }
+`;
 const LoanAccount = () => {
 
     const { hasLoanAccountSetTrue, hasLoanAccountSetFalse } = useContext(AccountContext);
@@ -86,8 +118,9 @@ const LoanAccount = () => {
             hasLoanAccountSetFalse();
             // Render the button to open a new loan account
             return (
-                <div>
-                    <button onClick={handleOpenLoanAccountClick}>Open a Loan Account</button>
+                <div className="loan_account_button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+                    <Button onClick={handleOpenLoanAccountClick}>Open a Loan Account</Button>
                 </div>
             );
         } else {
