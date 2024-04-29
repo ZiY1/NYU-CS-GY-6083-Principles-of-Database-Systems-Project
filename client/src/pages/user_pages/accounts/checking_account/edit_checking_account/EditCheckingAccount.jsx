@@ -17,7 +17,6 @@ const EditCheckingAccount = () => {
     const { isLoading, error, data } = useQuery({
         queryKey: ['checking_account_details'],
         queryFn: () => makeRequest.get("/checking_account/get").then((res) => res.data),
-
         onError: (err) => {
             console.error("Query error");
         }
@@ -108,12 +107,7 @@ const EditCheckingAccount = () => {
         updateMutation.mutate(inputs);
     };
 
-    const handleDeleteAccount = () => {
-        if (window.confirm("Are you sure you want to delete this account?")) {
-            deleteMutation.mutate();
-        }
-    };
-
+    // Delete mutation
     const deleteMutation = useMutation({
         mutationFn: () => makeRequest.delete(`/checking_account/delete/`),
         onSuccess: () => {
@@ -127,6 +121,12 @@ const EditCheckingAccount = () => {
             showAlert('error', 'Failed to delete the account: ' + (err.response?.data?.message || 'Unknown error'));
         }
     });
+
+    const handleDeleteAccount = () => {
+        if (window.confirm("Are you sure you want to delete this account?")) {
+            deleteMutation.mutate();
+        }
+    };
 
 
     if (isLoading) return <div>Loading...</div>;

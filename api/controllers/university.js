@@ -104,7 +104,7 @@ export const getUniversity = (req, res) => {
             if (data.length === 0) return res.status(404).json("Record not found");
 
             // Return the univ details with a 200 OK status.
-            const univ = data;
+            const univ = data[0];
             res.status(200).json({
                 message: "University retrieved successfully.",
                 univ
