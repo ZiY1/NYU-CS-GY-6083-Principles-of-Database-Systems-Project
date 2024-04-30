@@ -8,6 +8,7 @@ import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_s
 import OpenLoanAccount from "./pages/user_pages/accounts/loan_account/open_loan_account/OpenLoanAccount.jsx";
 import EditLoanAccount from "./pages/user_pages/accounts/loan_account/edit_loan_account/EditLoanAccount.jsx";
 import Profile from "./pages/user_pages/profile/Profile.jsx";
+import EditProfile from "./pages/user_pages/edit_profile/EditProfile.jsx";
 
 import {
   createBrowserRouter,
@@ -171,6 +172,14 @@ function App() {
           element: (
             <ProtectedProfileRoute>
               <Profile />
+            </ProtectedProfileRoute>
+          ),
+        },
+        {
+          path: "/edit_profile",
+          element: (
+            <ProtectedProfileRoute>
+              <EditProfile />
             </ProtectedProfileRoute>
           ),
         },

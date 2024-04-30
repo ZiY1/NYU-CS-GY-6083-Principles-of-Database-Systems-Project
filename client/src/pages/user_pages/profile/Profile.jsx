@@ -33,7 +33,7 @@ const Profile = () => {
           <p>User Name: {userData.user_name}</p>
         </div>
       )}
-      <Link to="/edit-profile" className="button">
+      <Link to="/edit_profile" className="button">
         Edit Profile
       </Link>
     </div>
