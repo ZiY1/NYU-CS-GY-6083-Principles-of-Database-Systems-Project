@@ -46,6 +46,11 @@ const EditProfile = () => {
     }
   };
 
+  const handleCancel = () => {
+    // Navigate back to the profile page
+    navigation("/profile");
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -165,6 +170,9 @@ const EditProfile = () => {
         </div>
         <button type="submit" onClick={handleSaveChanges}>
           Save Changes
+        </button>
+        <button type="button" onClick={handleCancel}>
+          Cancel
         </button>
       </form>
     </div>
