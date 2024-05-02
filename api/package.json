@@ -8,6 +8,7 @@
     "admin-bro-mongoose": "^0.5.2",
     "admin-bro-sequelize": "^1.1.1",
     "adminjs": "^7.8.1",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -26,11 +27,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "create-admin": "node adminRegister.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "vite": "^5.2.10"
+  }
 }

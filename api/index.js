@@ -14,14 +14,15 @@ import cookieParser from "cookie-parser";
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
-import Customer from './models/Customer.js';
-import Account from './models/Account.js';
+import bcrypt from "bcryptjs";
+import * as Models from "./models/index.js";
 
 // AdminJS setup
+const models = Object.values(Models);
 AdminJS.registerAdapter(AdminJSSequelize);
 const adminJS = new AdminJS({
   databases: [sequelize],
-  resources: [Customer, Account],
+  resources: models,
   rootPath: "/admin",
   branding: {
     companyName: "SAFE Bank",
@@ -40,12 +41,25 @@ sequelize
 
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJS, {
   authenticate: async (email, password) => {
-    if (email === "admin@example.com" && password === "password") {
-      return { email };
+    try {
+      const adminUser = await Models.Admin.findOne({
+        where: { admin_name: email },
+      });
+      if (adminUser) {
+        const isPasswordValid = bcrypt.compareSync(
+          password,
+          adminUser.admin_password
+        );
+        if (isPasswordValid) {
+          return { email: adminUser.admin_name };
+        }
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
     }
     return null;
   },
-  cookiePassword: "your_new_password",
+  cookiePassword: "test_cokkie_password",
 });
 
 // Application configuration
