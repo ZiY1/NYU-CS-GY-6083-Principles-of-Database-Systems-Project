@@ -9,6 +9,30 @@ import OpenLoanAccount from "./pages/user_pages/accounts/loan_account/open_loan_
 import EditLoanAccount from "./pages/user_pages/accounts/loan_account/edit_loan_account/EditLoanAccount.jsx";
 import Profile from "./pages/user_pages/profile/Profile.jsx";
 import EditProfile from "./pages/user_pages/edit_profile/EditProfile.jsx";
+import styled, { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    
+  }
+
+  body, html, #root {
+    height: 100%;
+    font-family: -apple-system, Ubuntu , BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+`;
 
 import {
   createBrowserRouter,
@@ -25,18 +49,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 function App() {
   const { currentUser } = useContext(AuthContext);
 
-  const { hasCheckingAccount, hasSavingAccount, hasLoanAccount } =
-    useContext(AccountContext);
+
+  const { hasCheckingAccount, hasSavingAccount, hasLoanAccount } = useContext(AccountContext);
 
   const queryClient = new QueryClient();
 
   const Layout = () => {
     return (
       <QueryClientProvider client={queryClient}>
-        <div>
+        <Wrapper>
           <NavBar />
           <Outlet />
-        </div>
+        </Wrapper>
       </QueryClientProvider>
     );
   };
@@ -196,9 +220,10 @@ function App() {
   ]);
 
   return (
-    <div>
+    <>
+      <GlobalStyle></GlobalStyle>
       <RouterProvider router={router} />
-    </div>
+    </>
   );
 }
 
