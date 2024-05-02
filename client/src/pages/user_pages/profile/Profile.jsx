@@ -86,6 +86,9 @@ const Profile = () => {
       <Link to="/edit_profile" className="button">
         Edit Profile
       </Link>
+      <Link to="/" className="back_button">
+        Back
+      </Link>
     </div>
   );
 };
