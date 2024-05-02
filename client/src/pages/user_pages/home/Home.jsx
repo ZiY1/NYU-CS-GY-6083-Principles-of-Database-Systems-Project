@@ -14,7 +14,6 @@ const Home = () => {
       <br></br>
       <CheckingAccount />
       <div></div>
-
       <SavingAccount />
       <div></div>
       <LoanAccount />

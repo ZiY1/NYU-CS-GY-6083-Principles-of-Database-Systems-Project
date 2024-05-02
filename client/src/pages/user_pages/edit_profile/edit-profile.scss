@@ -1,0 +1,61 @@
+.edit-profile {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+  
+    .form-group {
+      margin-bottom: 15px;
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+  
+      input {
+        width: 100%;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+  
+      .error {
+        margin-top: 5px;
+        color: red;
+        font-size: 14px;
+      }
+    }
+  
+    button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+  
+      &.cancel-button {
+        margin-left: 10px;
+        background-color: #dc3545;
+  
+        &:hover {
+          background-color: #bd2130;
+        }
+      }
+    }
+  }
+  
