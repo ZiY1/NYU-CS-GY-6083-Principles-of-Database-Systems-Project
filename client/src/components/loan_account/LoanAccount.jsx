@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import { makeRequest } from '../../axios';
+import { useQuery } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AccountContext } from "../../context/accountContext";
-import moment from 'moment';
+import moment from "moment";
 import { AccountTypes } from "../../../../api/constants/account_constants.js";
-
+import { Grid, Typography, Box } from "@mui/material";
+import StyledPaper from "../StyledPaper/StyledPaper";
 import styled, { keyframes } from "styled-components";
-
 const jump = keyframes`
   from{
     transform: translateY(0)
@@ -38,146 +38,299 @@ const Button = styled.button`
     animation: ${jump} 0.2s ease-out forwards;
   }
 `;
+
+const CornerButton = styled.button`
+  position: absolute;
+  bottom: 20px; // Distance from the bottom edge of the Paper
+  right: 20px; // Distance from the right edge of the Paper
+  padding: 10px 15px;
+  background-color: #b1cbf2;
+  color: rgb(253, 249, 243);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  &:hover {
+    background: #9fb6d9;
+    animation: ${jump} 0.2s ease-out forwards;
+  }
+`;
+
 const LoanAccount = () => {
+  const { hasLoanAccountSetTrue, hasLoanAccountSetFalse } =
+    useContext(AccountContext);
 
-    const { hasLoanAccountSetTrue, hasLoanAccountSetFalse } = useContext(AccountContext);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const {
+    data: loanData,
+    isLoading: isLoanLoading,
+    error: loanError,
+  } = useQuery({
+    queryKey: ["loan_account"],
+    queryFn: () => makeRequest.get("/loan_account/get").then((res) => res.data),
+    retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
+    onError: (err) => {
+      hasLoanAccountSetFalse();
+      console.error("Query error:", err);
+    },
+  });
 
-    const { data: loanData, isLoading: isLoanLoading, error: loanError } = useQuery({
-        queryKey: ['loan_account'],
-        queryFn: () => makeRequest.get("/loan_account/get").then((res) => res.data),
-        retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
-        onError: (err) => {
-            hasLoanAccountSetFalse();
-            console.error("Query error:", err);
-        }
-    });
+  const univ_id = loanData?.loanAccountDetails?.univ_id;
 
-    const univ_id = loanData?.loanAccountDetails?.univ_id;
+  const {
+    data: universityData,
+    isLoading: isUniversityLoading,
+    error: universityError,
+  } = useQuery({
+    queryKey: ["university", univ_id],
+    queryFn: () =>
+      makeRequest
+        .get("/university/get", {
+          params: { univ_id },
+        })
+        .then((res) => res.data),
+    enabled: !!univ_id, // query will not execute until ic_id exists
+    retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
+    onError: (err) => {
+      console.error("Query error:", err);
+    },
+  });
 
-    const { data: universityData, isLoading: isUniversityLoading, error: universityError } = useQuery({
-        queryKey: ['university', univ_id],
-        queryFn: () => makeRequest.get("/university/get", { 
-            params: { univ_id } 
-        }).then((res) => res.data),
-        enabled: !!univ_id, // query will not execute until ic_id exists
-        retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
-        onError: (err) => {
-            console.error("Query error:", err);
-        }
-    });
+  const ic_id = loanData?.loanAccountDetails?.ic_id;
 
-    const ic_id = loanData?.loanAccountDetails?.ic_id;
+  const {
+    data: insuranceCompanyData,
+    isLoading: isInsuranceCompanyLoading,
+    error: insuranceCompanyError,
+  } = useQuery({
+    queryKey: ["insurance_company", ic_id],
+    queryFn: () =>
+      makeRequest
+        .get("/insur_co/get", {
+          params: { ic_id },
+        })
+        .then((res) => res.data),
+    enabled: !!ic_id, // query will not execute until ic_id exists
+    retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
+    onError: (err) => {
+      console.error("Query error:", err);
+    },
+  });
 
-    const { data: insuranceCompanyData, isLoading: isInsuranceCompanyLoading, error: insuranceCompanyError } = useQuery({
-        queryKey: ['insurance_company', ic_id],
-        queryFn: () => makeRequest.get("/insur_co/get", { 
-            params: { ic_id } 
-        }).then((res) => res.data),
-        enabled: !!ic_id, // query will not execute until ic_id exists
-        retry: (failureCount, error) => error?.response?.status !== 404, // Retry when the error status is not 404
-        onError: (err) => {
-            console.error("Query error:", err);
-        }
-    });
-
-    useEffect(() => {
-        if (loanData) {
-            // console.log('Data available, setting account status to true:', loanData);
-            hasLoanAccountSetTrue();
-        }
-    }, [loanData, hasLoanAccountSetTrue]);
-
-    // The function to handle opening a new account
-    const handleOpenLoanAccountClick = () => {
-        navigate('/open_loan_account/');
-    };
-
-    // The function to handle view an existing account
-    const handleCardClick = () => {
-        navigate('/edit_loan_account/');
-    };
-
-    const formatDateTime = (dateString) => {
-        return moment(dateString).format('MMMM DD, YYYY, hh:mm:ss A');
-    };
-
-    const formatDate = (dateString) => {
-        return moment(dateString).format('MMMM DD, YYYY');
-    };
-
-
-    if (isLoanLoading || isInsuranceCompanyLoading || isUniversityLoading) {
-        return <div>Loading...</div>;
+  useEffect(() => {
+    if (loanData) {
+      // console.log('Data available, setting account status to true:', loanData);
+      hasLoanAccountSetTrue();
     }
+  }, [loanData, hasLoanAccountSetTrue]);
 
-    if (loanError) {
-        // Check if the error status is 404
-        if (loanError.response && loanError.response.status === 404) {
-            hasLoanAccountSetFalse();
-            // Render the button to open a new loan account
-            return (
-                <div className="loan_account_button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  // The function to handle opening a new account
+  const handleOpenLoanAccountClick = () => {
+    navigate("/open_loan_account/");
+  };
 
-                    <Button onClick={handleOpenLoanAccountClick}>Open a Loan Account</Button>
-                </div>
-            );
-        } else {
-            // Handle other errors
-            return <div>An error occurred: {loanError.message}</div>;
-        }
-    }
+  // The function to handle view an existing account
+  const handleCardClick = () => {
+    navigate("/edit_loan_account/");
+  };
 
-    if (insuranceCompanyError) {
-        // TODO:
-    }
+  const formatDateTime = (dateString) => {
+    return moment(dateString).format("MMMM DD, YYYY, hh:mm:ss A");
+  };
 
-    return (
-        <div className="loan_account">
-            <div className="loan_account">
-                <h1>Loan Account</h1>
-                {loanData && (
-                    <div className="card" onClick={() => handleCardClick()}>
-                        <p>Account No: {loanData.loanAccountDetails.acct_no}</p>
-                        <p>Account Name: {loanData.loanAccountDetails.acct_name}</p>
-                        <p>Date Opened: {formatDateTime(loanData.loanAccountDetails.acct_date_opened)}</p>
-                        <p>Billing State: {loanData.loanAccountDetails.acct_bill_state}</p>
-                        <p>Billing City: {loanData.loanAccountDetails.acct_bill_city}</p>
-                        <p>Billing Street: {loanData.loanAccountDetails.acct_bill_street}</p>
-                        <p>Billing Zipcode: {loanData.loanAccountDetails.acct_bill_zipcode}</p>
-                        <p>Monthly Loan Rate: {`${Number(loanData.loanAccountDetails.loan_rate).toFixed(2)}%`}</p>
-                        <p>Loan Amount: {`$${Number(loanData.loanAccountDetails.loan_amount).toFixed(2)}`}</p>
-                        <p>Loan Month: {`${Number(loanData.loanAccountDetails.loan_month)}`}</p>
-                        <p>Loan Payment: {`$${Number(loanData.loanAccountDetails.loan_payment).toFixed(2)}`}</p>
-                        {loanData.loanAccountDetails.loan_type === AccountTypes.STUDENT_LOAN && (
-                            <>
-                                <p>Loan Tyoe: Student Loan</p>
-                                <p>Student ID: {loanData.loanAccountDetails.stud_id}</p>
-                                <p>Student Type: {loanData.loanAccountDetails.stud_type}</p>
-                                <p>Expected Graduation Date: {formatDate(loanData.loanAccountDetails.exp_grad_date)}</p>
-                                <p>University Name: {universityData.univ.univ_name}</p>
-                            </>
-                        )}
-                        {loanData.loanAccountDetails.loan_type === AccountTypes.HOME_LOAN && (
-                            <>
-                                <p>Loan Tyoe: Home Loan</p>
-                                <p>House Built Year: {loanData.loanAccountDetails.built_year}</p>
-                                <p>Home Insurance Account NO: {loanData.loanAccountDetails.home_ins_acc_no}</p>
-                                <p>Insurance Premium: {loanData.loanAccountDetails.ins_premium}</p>
-                                <p>Insurance Company Name: {insuranceCompanyData.insuranceCompany.ic_name}</p>
-                            </>
-                        )}
-                        {loanData.loanAccountDetails.loan_type === AccountTypes.LOAN && (
-                            <>
-                                <p>Loan Tyoe: Other Loan</p>
-                            </>
-                        )}
-                    </div>
-                )}
-            </div>
+  const formatDate = (dateString) => {
+    return moment(dateString).format("MMMM DD, YYYY");
+  };
+
+  if (isLoanLoading || isInsuranceCompanyLoading || isUniversityLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (loanError) {
+    // Check if the error status is 404
+    if (loanError.response && loanError.response.status === 404) {
+      hasLoanAccountSetFalse();
+      // Render the button to open a new loan account
+      return (
+        <div
+          className="loan_account_button"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button onClick={handleOpenLoanAccountClick}>
+            Open a Loan Account
+          </Button>
         </div>
-    );
+      );
+    } else {
+      // Handle other errors
+      return <div>An error occurred: {loanError.message}</div>;
+    }
+  }
+
+  if (insuranceCompanyError) {
+    // TODO:
+  }
+
+  return (
+    <div className="loan_account">
+      {loanData && (
+        <StyledPaper elevation={3} sx={{ p: 2, backgroundColor: "#f3f7fd" }}>
+          <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+            Loan Account
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Account No:</strong>{" "}
+                {loanData.loanAccountDetails.acct_no}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Account Name:</strong>{" "}
+                {loanData.loanAccountDetails.acct_name}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                <strong>Date Opened:</strong>{" "}
+                {formatDateTime(loanData.loanAccountDetails.acct_date_opened)}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Billing State:</strong>{" "}
+                {loanData.loanAccountDetails.acct_bill_state}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Billing City:</strong>{" "}
+                {loanData.loanAccountDetails.acct_bill_city}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body1">
+                <strong>Billing Street:</strong>{" "}
+                {loanData.loanAccountDetails.acct_bill_street}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Billing Zipcode:</strong>{" "}
+                {loanData.loanAccountDetails.acct_bill_zipcode}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Monthly Loan Rate:</strong>{" "}
+                {`${Number(loanData.loanAccountDetails.loan_rate).toFixed(2)}%`}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Loan Amount:</strong>{" "}
+                {`$${Number(loanData.loanAccountDetails.loan_amount).toFixed(
+                  2
+                )}`}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Loan Month:</strong>{" "}
+                {`${Number(loanData.loanAccountDetails.loan_month)}`}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1">
+                <strong>Loan Payment:</strong>{" "}
+                {`$${Number(loanData.loanAccountDetails.loan_payment).toFixed(
+                  2
+                )}`}
+              </Typography>
+            </Grid>
+            {loanData.loanAccountDetails.loan_type ===
+              AccountTypes.STUDENT_LOAN && (
+              <>
+                <Grid item xs={12}>
+                  <Typography variant="body1">
+                    <strong>Loan Type:</strong> Student Loan
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Student ID:</strong>{" "}
+                    {loanData.loanAccountDetails.stud_id}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Student Type:</strong>{" "}
+                    {loanData.loanAccountDetails.stud_type}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Expected Graduation Date:</strong>{" "}
+                    {formatDate(loanData.loanAccountDetails.exp_grad_date)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>University Name:</strong>{" "}
+                    {universityData.univ.univ_name}
+                  </Typography>
+                </Grid>
+              </>
+            )}
+            {loanData.loanAccountDetails.loan_type ===
+              AccountTypes.HOME_LOAN && (
+              <>
+                <Grid item xs={12}>
+                  <Typography variant="body1">
+                    <strong>Loan Type:</strong> Home Loan
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>House Built Year:</strong>{" "}
+                    {loanData.loanAccountDetails.built_year}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Home Insurance Account No:</strong>{" "}
+                    {loanData.loanAccountDetails.home_ins_acc_no}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Insurance Premium:</strong>{" "}
+                    {loanData.loanAccountDetails.ins_premium}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1">
+                    <strong>Insurance Company Name:</strong>{" "}
+                    {insuranceCompanyData.insuranceCompany.ic_name}
+                  </Typography>
+                </Grid>
+              </>
+            )}
+          </Grid>
+          <br />
+          <br />
+          <br />
+          <CornerButton onClick={handleCardClick}>EDIT</CornerButton>
+        </StyledPaper>
+      )}
+    </div>
+  );
 };
 
 export default LoanAccount;
