@@ -7,8 +7,60 @@ import loanAccountRoutes from "./routes/loan_account.js";
 import acctRateRoutes from "./routes/acct_rate.js";
 import univRouters from "./routes/university.js";
 import insurCoRouters from "./routes/insurance_company.js";
+import { sequelize } from "./connect.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
+import AdminJS from "adminjs";
+import AdminJSExpress from "@adminjs/express";
+import AdminJSSequelize from "@adminjs/sequelize";
+import bcrypt from "bcryptjs";
+import * as Models from "./models/index.js";
+
+// AdminJS setup
+const models = Object.values(Models);
+AdminJS.registerAdapter(AdminJSSequelize);
+const adminJS = new AdminJS({
+  databases: [sequelize],
+  resources: models,
+  rootPath: "/admin",
+  branding: {
+    companyName: "SAFE Bank",
+  },
+});
+
+// Sync models with database
+sequelize
+  .sync()
+  .then(() => {
+    console.log("Database synced!");
+  })
+  .catch((err) => {
+    console.error("Failed to sync database: ", err);
+  });
+
+const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJS, {
+  authenticate: async (email, password) => {
+    try {
+      const adminUser = await Models.Admin.findOne({
+        where: { admin_name: email },
+      });
+      if (adminUser) {
+        const isPasswordValid = bcrypt.compareSync(
+          password,
+          adminUser.admin_password
+        );
+        if (isPasswordValid) {
+          return { email: adminUser.admin_name };
+        }
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+    }
+    return null;
+  },
+  cookiePassword: "test_cokkie_password",
+});
 
 // Application configuration
 const corsOrigin = "http://localhost:5173";
@@ -18,20 +70,21 @@ const app = express();
 
 // Middleware to enhance CORS security by specifying allowed origin
 app.use(
-    cors({
-        origin: corsOrigin,
-        credentials: true,
-    })
+  cors({
+    origin: corsOrigin,
+    credentials: true,
+  })
 );
 
 // Middleware for parsing JSON bodies and cookies
+
 app.use(express.json());
 app.use(cookieParser());
 
 // Custom middleware to set specific headers for handling credentials
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Credentials", true);
-    next();
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
 });
 
 // API routes with specific base paths
@@ -46,13 +99,16 @@ app.use("/api/insur_co", insurCoRouters);
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error stack for debugging
-    res.status(500).send('Something broke!'); // Send a generic error response
+  console.error(err.stack); // Log the error stack for debugging
+  res.status(500).send("Something broke!"); // Send a generic error response
 });
+
+// AdminJS routes
+app.use(adminJS.options.rootPath, adminRouter);
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Backend running on port ${port}!`);
+  console.log(`Backend running on port ${port}!`);
 });
 
 /** TODO: Consider Using

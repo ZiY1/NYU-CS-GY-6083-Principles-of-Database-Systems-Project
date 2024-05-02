@@ -9,3 +9,8 @@ export const AccountTypes = {
 export const AccountRateID = {
     RATE_ID: "6083"
 }
+
+export const StudentTypes = {
+    UNDERGRADE: "UNDERGRADE",
+    GRADUATE: "GRADUATE"
+}

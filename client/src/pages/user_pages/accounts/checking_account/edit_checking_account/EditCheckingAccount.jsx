@@ -70,9 +70,7 @@ const EditCheckingAccount = () => {
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["checking_account_details"],
-    queryFn: () =>
-      makeRequest.get("/checking_account/get").then((res) => res.data),
-
+    queryFn: () => makeRequest.get("/checking_account/get").then((res) => res.data),
     onError: (err) => {
       console.error("Query error");
     },
