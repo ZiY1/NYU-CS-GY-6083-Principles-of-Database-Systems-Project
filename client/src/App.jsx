@@ -7,6 +7,8 @@ import OpenSavingAccount from "./pages/user_pages/accounts/saving_account/open_s
 import EditSavingAccount from "./pages/user_pages/accounts/saving_account/edit_saving_account/EditSavingAccount.jsx";
 import OpenLoanAccount from "./pages/user_pages/accounts/loan_account/open_loan_account/OpenLoanAccount.jsx";
 import EditLoanAccount from "./pages/user_pages/accounts/loan_account/edit_loan_account/EditLoanAccount.jsx";
+import Profile from "./pages/user_pages/profile/Profile.jsx";
+import EditProfile from "./pages/user_pages/edit_profile/EditProfile.jsx";
 import styled, { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -46,6 +48,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
+
 
   const { hasCheckingAccount, hasSavingAccount, hasLoanAccount } = useContext(AccountContext);
 
@@ -118,6 +121,15 @@ function App() {
     return children;
   };
 
+  // Define route for profile page
+  const ProtectedProfileRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to="/login" />;
+    }
+
+    return children;
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -177,6 +189,22 @@ function App() {
             <ProtectedEditLoanAccountRoute>
               <EditLoanAccount />
             </ProtectedEditLoanAccountRoute>
+          ),
+        },
+        {
+          path: "/profile",
+          element: (
+            <ProtectedProfileRoute>
+              <Profile />
+            </ProtectedProfileRoute>
+          ),
+        },
+        {
+          path: "/edit_profile",
+          element: (
+            <ProtectedProfileRoute>
+              <EditProfile />
+            </ProtectedProfileRoute>
           ),
         },
       ],
