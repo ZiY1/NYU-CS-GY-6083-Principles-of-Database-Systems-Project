@@ -46,7 +46,7 @@ const Account = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "zzz_account", // name of the table
+        model: "zzz_account",  
         key: "cust_id",
       },
     },

@@ -221,7 +221,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle></GlobalStyle>
+      
       <RouterProvider router={router} />
     </>
   );
