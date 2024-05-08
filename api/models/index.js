@@ -6,8 +6,9 @@ import Checking from "./Checking.js";
 import Saving from "./Saving.js";
 import CustAuth from "./CustAuth.js";
 import Loan from "./Loan.js";
-import HomeLoan from "./HomeLong.js";
-import InsuranceCompany from "./InsuranceComp.js";
+import HomeLoan from "./HomeLoan.js";
+import StudentLoan from "./StudentLoan.js";
+import InsuranceCompany from "./InsuranceCompany.js";
 
 export {
   Admin,
@@ -18,6 +19,7 @@ export {
   Saving,
   Loan,
   HomeLoan,
+  StudentLoan,
   University,
   InsuranceCompany,
 };

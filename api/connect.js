@@ -4,20 +4,20 @@ import { Sequelize } from "sequelize";
 export const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  //password: "your_new_password",
+  password: "Hzy3309521.12#",
   database: "SAFE_DATABASE",
-  //port: "33061",
+  port: "3306",
 });
 
 // ORM for AdminJS
 export const sequelize = new Sequelize(
   "SAFE_DATABASE",
   "root",
-  null,
+  "Hzy3309521.12#",
   {
     host: "localhost",
     dialect: "mysql",
-    //port: 33061,
+    port: 3306,
     dialectModule: mysql,
   }
 );
