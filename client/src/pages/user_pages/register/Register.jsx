@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Paper,Typography, TextField, Grid, Snackbar, Alert } from "@mui/material";
+import { Paper, Typography, TextField, Grid, Snackbar, Alert } from "@mui/material";
 import styled, { keyframes } from "styled-components";
+import DOMPurify from 'dompurify';
+
 
 const StyledPaper = styled(Paper)`
   position: relative;
@@ -78,12 +80,16 @@ function Register() {
   };
 
   const handleChange = (event) => {
-    setInputs((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+    const { name, value } = event.target;
+    const sanitizedValue = DOMPurify.sanitize(value);
+    setInputs((prev) => ({ ...prev, [name]: sanitizedValue }));
+
     // Clear error for a field when it's being edited
-    if (errors[event.target.name]) {
-      setErrors((prev) => ({ ...prev, [event.target.name]: null }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
     }
   };
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -103,9 +109,8 @@ function Register() {
       if (!inputs[key]) {
         newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} is required.`; // Adding spaces before capital letters for better readability
       } else if (inputs[key].length > maxLengths[key]) {
-        newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} must be at most ${
-          maxLengths[key]
-        } characters.`;
+        newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} must be at most ${maxLengths[key]
+          } characters.`;
       }
     });
 
